@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huzd.huji.mapper.hujiMapper">
+    <insert id="addHuji">
+        insert into hujiTable (Name,identityID,Sex,Age,PhoneNumber,Location)
+        value(#{Name},#{identityID},#{Sex},#{Age},#{PhoneNumber},#{Location});
+    </insert>
+    <update id="updateID">
+        set @i=0;
+        update hujitable set hujitable.id=(@i:=@i+1);
+    </update>
+    <update id="updateHuji">
+        update hujitable set Location =#{huji.Location}
+        where id=#{huji.id};
+    </update>
+    <update id="updateHuji2">
+        update hujitable
+        <set>
+            <if test="huji.Name!=null and huji.Name!=''">
+                Name = #{huji.Name},
+            </if>
+            <if test="huji.identityID!=null and huji.identityID!=''">
+                 identityID = #{huji.identityID},
+            </if>
+            <if test="huji.sex!=null and huji.sex!=''">
+                 Sex = #{huji.sex},
+            </if>
+            <if test="huji.Age!=null and huji.Age!=''">
+                 Age = #{huji.Age},
+            </if>
+            <if test="huji.PhoneNumber!=null and huji.PhoneNumber!=''">
+                PhoneNumber = #{huji.PhoneNumber},
+            </if>
+            <if test="huji.Location!=null and huji.Location!=''">
+                Location = #{huji.Location},
+            </if>
+        </set>
+        where id=#{huji.id};
+    </update>
+    <delete id="deleteByIds">
+        delete from hujiTable
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAll" resultType="com.huzd.huji.pojo.huji">
+        select *from hujiTable;
+    </select>
+    <select id="selectByNameAndId" resultType="com.huzd.huji.pojo.huji">
+        select *from hujiTable
+        where Name=#{Name} and identityID=#{identityID};
+    </select>
+    <select id="selectByPage" resultType="com.huzd.huji.pojo.huji">
+        select * from hujiTable
+        limit #{begin} ,#{size};
+    </select>
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select count(*)from hujiTable;
+    </select>
+    <select id="selectByPageWithCondition" resultType="com.huzd.huji.pojo.huji">
+        select * from hujiTable
+        <where>
+            <if test="huji.Name!=null and huji.Name!=''">
+                and Name LIKE #{huji.Name}
+            </if>
+            <if test="huji.identityID!=null and huji.identityID!=''">
+                and identityID LIKE #{huji.identityID}
+            </if>
+            <if test="huji.Location!=null and huji.Location!=''">
+                and Location LIKE #{huji.Location}
+            </if>
+        </where>
+        limit #{begin},#{size};
+
+    </select>
+    <select id="selectTotalCountWithCondition" resultType="java.lang.Integer">
+        select count(*)from hujiTable
+        <where>
+            <if test="huji.Name!=null and huji.Name!=''">
+                and Name LIKE #{huji.Name}
+            </if>
+            <if test="huji.identityID!=null and huji.identityID!=''">
+                and identityID LIKE #{huji.identityID}
+            </if>
+            <if test="huji.Location!=null and huji.Location!=''">
+                and Location LIKE #{huji.Location}
+            </if>
+        </where>
+        ;
+    </select>
+</mapper>

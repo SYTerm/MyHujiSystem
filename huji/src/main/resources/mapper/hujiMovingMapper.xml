@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huzd.huji.mapper.hujiMovingMapper">
+    <insert id="addHujiMoving">
+         insert into hujimovingtable (id,Name,identityID,locationOld,locationNew,movingTypes)
+        value(#{id},#{Name},#{identityID},#{locationOld},#{locationNew},#{movingTypes});
+    </insert>
+    <select id="selectAll" resultType="com.huzd.huji.pojo.hujiMoving">
+        select *from hujimovingtable;
+    </select>
+    <select id="selectByPage" resultType="com.huzd.huji.pojo.hujiMoving">
+        select * from hujimovingtable
+        limit #{begin} ,#{size};
+    </select>
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select count(*) from hujimovingtable;
+    </select>
+    <select id="selectByPageWithCondition" resultType="com.huzd.huji.pojo.hujiMoving">
+        select * from hujimovingtable
+        <where>
+            <if test="hujiMoving.movingTypes!=null and hujiMoving.movingTypes!=''">
+                movingTypes=#{hujiMoving.movingTypes}
+            </if>
+        </where>
+        limit #{begin},#{size};
+    </select>
+    <select id="selectTotalCountWithCondition" resultType="java.lang.Integer">
+        select count(*) from hujimovingtable
+        <where>
+            <if test="hujiMoving.movingTypes!=null and hujiMoving.movingTypes!=''">
+                movingTypes=#{hujiMoving.movingTypes}
+            </if>
+        </where>
+        ;
+    </select>
+</mapper>

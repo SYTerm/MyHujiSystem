@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huzd.huji.mapper.idCardMapper">
+    <insert id="addidCard">
+        insert into idcardtable (Name,identityID,processingTime,collectionTime,status)
+        value(#{Name},#{identityID},#{processingTime},#{collectionTime},#{status});
+    </insert>
+    <insert id="addOrAdjustidCard">
+        insert into idcardtable (Name,identityID,processingTime,collectionTime,status,Age,Sex,nation)
+        value(#{Name},#{identityID},#{processingTime},#{collectionTime},#{status},#{Age},#{Sex},#{nation});
+    </insert>
+    <update id="updateidCard">
+         update idcardtable set status =#{idCard.status}
+        where id=#{idCard.id};
+    </update>
+    <delete id="deleteidCard">
+        delete from idCardTable
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAll" resultType="com.huzd.huji.pojo.idCard">
+        select * from idcardtable;
+    </select>
+    <select id="selectByPage" resultType="com.huzd.huji.pojo.idCard">
+         select * from idcardtable
+        limit #{begin} ,#{size};
+    </select>
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select count(*)from idcardtable;
+    </select>
+    <select id="selectByPageWithCondition" resultType="com.huzd.huji.pojo.idCard">
+        select * from idcardtable
+        <where>
+            <if test="idCard.Name!=null and idCard.Name!=''">
+                and Name LIKE #{idCard.Name}
+            </if>
+            <if test="idCard.identityID!=null and idCard.identityID!=''">
+                and identityID LIKE #{idCard.identityID}
+            </if>
+            <if test="idCard.status!=null and idCard.status!=''">
+                and status LIKE #{idCard.status}
+            </if>
+        </where>
+        limit #{begin},#{size};
+    </select>
+    <select id="selectTotalCountWithCondition" resultType="java.lang.Integer">
+        select count(*)from idcardtable
+        <where>
+            <if test="idCard.Name!=null and idCard.Name!=''">
+                and Name LIKE #{idCard.Name}
+            </if>
+            <if test="idCard.identityID!=null and idCard.identityID!=''">
+                and identityID LIKE #{idCard.identityID}
+            </if>
+            <if test="idCard.status!=null and idCard.status!=''">
+                and status LIKE #{idCard.status}
+            </if>
+        </where>
+        ;
+    </select>
+
+    <select id="selectByPageAllRright" resultType="com.huzd.huji.pojo.idCard">
+        select * from idcardtable
+        where status = '办理完成'
+        limit #{begin} ,#{size};
+    </select>
+
+    <select id="selectTotalCountAllRight" resultType="java.lang.Integer">
+        select count(*)from idcardtable where status = '办理完成';
+    </select>
+    <select id="selectOne" resultType="com.huzd.huji.pojo.idCard">
+        select * from idcardtable where identityID LIKE #{identityID}
+    </select>
+
+</mapper>
