@@ -2,7 +2,7 @@
 <div style="display: flex; align-items: center; justify-content: center;margin-top: 30px ">
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" size="large">
     <el-form-item>
-      <div style="font-weight: bold; font-size: 25px">身份证信息注册表</div>
+      <div style="font-weight: bold; font-size: 25px">户籍信息注册表</div>
     </el-form-item>
     <el-form-item label="姓名" prop="Name">
       <el-input v-model="ruleForm.Name"></el-input>
@@ -19,24 +19,16 @@
     <el-form-item label="年龄" prop="Age">
       <el-input v-model="ruleForm.Age"></el-input>
     </el-form-item>
+    <el-form-item label="电话号码" prop="PhoneNumber">
+      <el-input v-model="ruleForm.PhoneNumber"></el-input>
+    </el-form-item>
+    <el-form-item label="户籍" prop="location">
+      <el-input type="textarea" v-model="ruleForm.location"></el-input>
+    </el-form-item>
     <el-form-item label="办理时间" prop="processingTime">
       <el-col>
-        <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="ruleForm.processingTime" style="width: 100%;"  @change="updateCollectionTime"></el-date-picker>
+        <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="ruleForm.processingTime" style="width: 100%;"  ></el-date-picker>
       </el-col>
-    </el-form-item>
-    <el-form-item label="预计领取时间" prop="collectionTime">
-      <el-col>
-        <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="ruleForm.collectionTime" style="width: 100%;"></el-date-picker>
-      </el-col>
-    </el-form-item>
-    <el-form-item label="民族" prop="nation">
-      <el-input v-model="ruleForm.nation"></el-input>
-    </el-form-item>
-    <el-form-item label="服务类型" prop="Sex">
-      <el-select v-model="ruleForm.types" placeholder="请选择服务类型">
-        <el-option label="注册" value="注册"></el-option>
-        <el-option label="更新" value="更新"></el-option>
-      </el-select>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -58,15 +50,14 @@ export default {
   data() {
     return {
       ruleForm: {
+        Username:'',
         Name:'',
         identityID:'',
         Sex:'',
         Age:'',
-        processingTime:'',
-        collectionTime:'',
-        status:'正在办理',
-        nation:'',
-        types: ''
+        PhoneNumber:'',
+        location:'',
+        processingTime: ''
       },
       rules: {
         Name: [
@@ -80,15 +71,14 @@ export default {
         Age: [
           { required: true, message: '请输入年龄', trigger: 'blur' },
         ],
-        processingTime: [
-          { required: true, message: '请选择办理日期', trigger: 'blur' },
+        PhoneNumber: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { min: 11, max: 11, message: '长度为11个字符', trigger: 'blur' }
         ],
-        collectionTime: [
-          { required: false},
-        ],
-        nation: [
-          { required: true, message: '请输入民族', trigger: 'blur' },
+        location: [
+          { required: true, message: '请输入户籍', trigger: 'blur' },
         ]
+
 
       }
     };
@@ -109,9 +99,10 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) //验证是否全部输入成功
         {
+          _this.ruleForm.Username = JSON.parse(localStorage.getItem("users")).data.Username
           axios({
             method: "Post",
-            url: "http://localhost:8090/idCards/addidCards",
+            url: "http://localhost:8090/huji/usrUpload",
             data: _this.ruleForm
           }).then(function (resp) {
             if(resp.data.code=="200")
@@ -121,7 +112,7 @@ export default {
                 message: resp.data.msg,
                 type: 'success'
               });
-              _this.submitalerts('/IdCardMain');
+              _this.submitalerts('/HujiQuery');
             }
             else {
               _this.$message.error(resp.data.msg);
@@ -135,26 +126,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },
-    updateCollectionTime() {
-      const processingTime = new Date(this.ruleForm.processingTime); // 转换为 Date 对象
-      if(! this.ruleForm.processingTime)
-      {
-        this.ruleForm.collectionTime = '';
-        return
-      }
-      else
-      {
-        const collectionTime = new Date(processingTime); // 克隆办理时间
-        collectionTime.setMonth(collectionTime.getMonth() + 2); // 添加两个月
-
-        // 更新领取时间
-        const year = collectionTime.getFullYear();
-        const month = (collectionTime.getMonth() + 1).toString().padStart(2, '0'); // 补零
-        const day = collectionTime.getDate().toString().padStart(2, '0'); // 补零
-        this.ruleForm.collectionTime = `${year}-${month}-${day}`;
-      }
-    },
+    }
   }
 }
 </script>

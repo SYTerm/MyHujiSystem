@@ -35,6 +35,11 @@
         <el-option label="注销" value="注销"></el-option>
       </el-select>
     </el-form-item>
+    <el-form-item label="办理时间" prop="processingTime">
+      <el-col>
+        <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="ruleForm.processingTime" style="width: 100%;"></el-date-picker>
+      </el-col>
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
       <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -55,6 +60,7 @@ export default {
   data() {
     return {
       ruleForm: {
+        Username: JSON.parse(localStorage.getItem("users")).data.Username,
         Name:'',
         identityID:'',
         Sex:'',
@@ -62,7 +68,8 @@ export default {
         PhoneNumber:'',
         locationOld:'',
         locationNew:'',
-        movingTypes:''
+        movingTypes:'',
+        processingTime: ''
       },
       rules: {
         Name: [
@@ -91,6 +98,16 @@ export default {
     };
   },
   methods: {
+    submitalerts(dir){
+      this.$alert('数据更新需要一定时间，请耐心等待', '注意事项', {
+        confirmButtonText: '确定',
+        callback: action => {
+          if (action === 'confirm') {
+            this.$router.push(dir);
+          }
+        }
+      });
+    },
     submitForm(formName) {
       var _this=this;
       this.$refs[formName].validate((valid) => {
@@ -98,17 +115,17 @@ export default {
         {
           axios({
             method: "Post",
-            url: "http://localhost:8090/hujiMoving/add",
+            url: "http://localhost:8090/hujiMoving/usrUpload",
             data: _this.ruleForm
           }).then(function (resp) {
-            if(resp.data.msg=="户籍迁移成功")
+            if(resp.data.code=="200")
             {
               //成功提示并跳转
               _this.$message({
                 message: resp.data.msg,
                 type: 'success'
               });
-              _this.$router.push('/hujiMoving');
+              _this.submitalerts('/hujiMoving');
             }
             else {
               _this.$message.error(resp.data.msg);

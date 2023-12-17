@@ -1,11 +1,12 @@
 package com.huzd.huji.pojo;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
-public class huji{
+public class queryData {
     private int id;
+    @JsonProperty("Username")
+    private String Username;
+    private String processingTime;
     @JsonProperty( "Name")
     private String Name;
     private String identityID;
@@ -74,29 +75,20 @@ public class huji{
         Location = location;
     }
 
-    public huji() {
+    public String getUsername() {
+        return Username;
     }
 
-    public huji(int id, String name, String identityID, String sex, String age, String phoneNumber, String location) {
-        this.id = id;
-        Name = name;
-        this.identityID = identityID;
-        Sex = sex;
-        Age = age;
-        PhoneNumber = phoneNumber;
-        Location = location;
+    public void setUsername(String username) {
+        Username = username;
     }
 
-    @Override
-    public String toString() {
-        return "huji{" +
-                "id=" + id +
-                ", Name='" + Name + '\'' +
-                ", identityID='" + identityID + '\'' +
-                ", Sex='" + Sex + '\'' +
-                ", Age='" + Age + '\'' +
-                ", PhoneNumber='" + PhoneNumber + '\'' +
-                ", Location='" + Location + '\'' +
-                '}';
+    public String getProcessingTime() {
+        return processingTime;
     }
+
+    public void setProcessingTime(String processingTime) {
+        this.processingTime = processingTime;
+    }
+
 }

@@ -108,7 +108,8 @@ export default {
               //登陆成功提示并跳转
               _this.$message({
                 message: '登录成功',
-                type: 'success'
+                type: 'success',
+                duration: 1000
               });
               localStorage.setItem("users",JSON.stringify(resp.data)); //存储用户数据
               localStorage.setItem("loginTime",new Date().toLocaleString());

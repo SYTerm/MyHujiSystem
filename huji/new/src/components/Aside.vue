@@ -1,5 +1,5 @@
 <template>
-    <el-menu :default-openeds="['1','2','3']" style="height: 100%; padding: 0;"
+    <el-menu :default-openeds="['1']" style="height: 100%; padding: 0;"
              background-color="rgb(48,65,86)"
              text-color=#fff
              active-text-color=rgb(256,256,0)
@@ -28,6 +28,8 @@
         </template>
         <el-menu-item-group>
           <el-menu-item index="/HujiShow">户籍信息</el-menu-item>
+          <el-menu-item index="/HujiAdd">户籍注册表</el-menu-item>
+          <el-menu-item index="/HujiQuery">待办事项</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 
@@ -38,8 +40,8 @@
         </template>
         <el-menu-item-group>
           <el-menu-item index="/IdCardMain">身份证信息</el-menu-item>
-          <el-menu-item index="/IdCard">身份证办理</el-menu-item>
-          <el-menu-item index="/IdCardAdd">身份证注册</el-menu-item>
+          <el-menu-item index="/IdCardAdd">身份证注册表</el-menu-item>
+          <el-menu-item index="/IdCard">待办事项</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 
@@ -50,9 +52,21 @@
         </template>
         <el-menu-item-group>
           <el-menu-item index="/hujiMoving">户籍迁移信息</el-menu-item>
-          <el-menu-item index="/hujiMovingAdd">户籍迁移信息注册</el-menu-item>
+          <el-menu-item index="/hujiMovingAdd">户籍迁移注册表</el-menu-item>
+          <el-menu-item index="/HujiMovingQuery">待办事项</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
+
+      <el-submenu index="4">
+        <template slot="title">
+          <i class="el-icon-user"></i>
+          <span slot="title">用户管理</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="/UserManager">所有用户</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+
     </el-menu>
 </template>
 

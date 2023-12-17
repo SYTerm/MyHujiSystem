@@ -15,16 +15,22 @@
 
             <el-submenu index="2" >
               <template slot="title">户籍</template>
-              <el-menu-item index="2-2">我的户籍</el-menu-item>
+              <el-menu-item index="/ForUser/HujiAdd">户籍信息注册</el-menu-item>
               <el-menu-item index="/ForUser/hujiMovingAdd">户籍迁移信息注册</el-menu-item>
             </el-submenu>
 
             <el-submenu index="3">
             <template slot="title">身份证</template>
             <el-menu-item index="/ForUser/IdCardAdd">身份证注册</el-menu-item>
-            <el-menu-item index="3-2">身份证注册进度查询</el-menu-item>
+              <el-menu-item index="/ForUser/MyIdCard">身份证进度查询</el-menu-item>
             </el-submenu>
-            <el-menu-item index="/ForUser/PC">个人中心</el-menu-item>
+
+            <el-submenu index="4">
+              <template slot="title">个人中心</template>
+              <el-menu-item index="/ForUser/PC">个人中心</el-menu-item>
+              <el-menu-item index="/ForUser/notice">通知</el-menu-item>
+            </el-submenu>
+
             <el-menu-item @click.native="logout">登出</el-menu-item>
           </el-menu>
         </div>

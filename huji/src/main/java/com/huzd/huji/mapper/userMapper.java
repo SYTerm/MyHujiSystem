@@ -1,5 +1,6 @@
 package com.huzd.huji.mapper;
 
+import com.huzd.huji.pojo.Result;
 import com.huzd.huji.pojo.connect;
 import com.huzd.huji.pojo.huji;
 import com.huzd.huji.pojo.loginRecord;
@@ -28,10 +29,10 @@ public interface userMapper {
     @Insert("INSERT into loginrecord (username,loginTime) values (#{username},#{loginTime})")
     void addLoginRecord(loginRecord loginRecord);
 
-    @Select("select * from loginrecord ORDER BY id DESC LIMIT 6;")
+    @Select("select * from loginrecord ORDER BY id DESC LIMIT 5;")
     List<loginRecord>selectAllLogin();
 
-    @Select("select * from loginrecord where username LIKE #{Username}  ORDER BY id DESC LIMIT 6;")
+    @Select("select * from loginrecord where username LIKE #{Username}  ORDER BY id DESC LIMIT 5;")
     List<loginRecord>selectUserLogin(user user);
 
     @Update("UPDATE usertable set password = #{Password} where Username = #{Username}")
@@ -49,4 +50,27 @@ public interface userMapper {
     void connectUpdate(connect connect);
 
     huji showHuji(user user);
+
+    //以下是用户管理操作
+
+    //    批量删除
+    void deleteByIds(@Param("ids") int[]ids);
+
+    //    分页查询
+    List<user>selectByPage(@Param("begin") int index,@Param("size") int pageSize);
+
+    //    数据总条目数
+    int selectTotalCount();
+
+    //    分页条件查询
+    List<user>selectByPageWithCondition(@Param("begin") int index,@Param("size") int pageSize,@Param("user") user user);
+
+    //    数据总条目数
+    int selectTotalCountWithCondition(@Param("user") user user);
+
+    //  查询密码
+    @Select("select * from usertable where Username = #{user.Username}")
+    user GetPasswd(@Param("user") user user);
+
+
 }

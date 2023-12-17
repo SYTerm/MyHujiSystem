@@ -57,7 +57,31 @@ const routes = [
         name: '个人中心',
         component: () => import('../views/PersonalCenter.vue'),
         meta: { requiresAdmin: true }
-      }
+      },
+      {
+        path: 'HujiAdd',
+        name: '户籍信息添加',
+        component: () => import('../views/HujiAddForm.vue'),
+        meta: { requiresAdmin: true }
+      },
+      {
+        path: 'UserManager',
+        name: '用户管理',
+        component: () => import('../views/UserManager.vue'),
+        meta: { requiresAdmin: true }
+      },
+      {
+        path: 'HujiQuery',
+        name: '户籍待办事项',
+        component: () => import('../views/HujiQuery.vue'),
+        meta: { requiresAdmin: true }
+      },
+      {
+        path: 'HujiMovingQuery',
+        name: '户籍迁移待办事项',
+        component: () => import('../views/HujiMovingQuery.vue'),
+        meta: { requiresAdmin: true }
+      },
     ]
   },
 
@@ -85,7 +109,22 @@ const routes = [
         path: 'PC',
         name: 'User个人中心',
         component: () => import('../views/PersonalCenter.vue'),
-      }
+      },
+      {
+        path: 'HujiAdd',
+        name: 'User户籍信息添加',
+        component: () => import('../views/HujiAddForm.vue'),
+      },
+      {
+        path: 'MyIdCard',
+        name: 'User身份证办理进度查询',
+        component: () => import('../views/IdCardSearchForUser.vue'),
+      },
+      {
+        path: 'notice',
+        name: 'User消息',
+        component: () => import('../views/notice.vue'),
+      },
       ]
   },
 

@@ -23,6 +23,8 @@ public class userController {
     @Autowired
     private hujiService hujiService;
 
+    //以下是登录操注册作
+
     @PostMapping("/login")
      public Result login(@RequestBody user user){
         if(user.getUsername()==null || user.getPassword()==null){
@@ -55,7 +57,7 @@ public class userController {
 
     @PostMapping("/register")
     public Result register(@RequestBody user user){
-        if(user.getUsername()==null || user.getPassword()==null){
+        if(user.getUsername()==null || user.getUsername()=="" || user.getPassword()==null || user.getPassword()==""){
             return Result.err();
         }
         else if(userService.selectByName(user) == null)//查询后不存在用户
@@ -71,18 +73,19 @@ public class userController {
     }
 
     @PostMapping("/update")
-    public Result update(@RequestBody user user){
+    public Result update(@RequestParam String PasswdIn,@RequestBody user user){
         if(user.getUsername()==null || user.getPassword()==null){
             return Result.err();
         }
-        else if(userService.selectByName(user) != null)//查询后存在用户
+        user u2 = userService.selectByName(user);
+         if(u2 != null && u2.getPassword().equals(PasswdIn))//查询后存在用户
         {
             userService.update(user);
             return Result.success();
         }
         else
         {
-            return Result.err("用户不存在");
+            return Result.err("旧密码错误或用户不存在");
         }
 
     }
@@ -91,8 +94,6 @@ public class userController {
     public user showPsw(@RequestBody user user){
         return userService.selectByName(user);
     }
-
-
 
     @GetMapping("/All")
     public List<user> selectAll(){
@@ -149,4 +150,46 @@ public class userController {
         huji huji = userService.showHuji(user);
         return Result.success(huji);
     }
+
+    //以下是用户管理操作
+
+    @PostMapping("/GetPasswd")
+    public Result getPaswd(@RequestBody user user){
+        user u2 = userService.GetPasswd(user);
+        return Result.success(u2);
+    }
+
+    @DeleteMapping("/deletes")
+    public String deleteSomeUser(@RequestBody int []ids){
+        userService.deleteByIds(ids);
+        return "success";
+    }
+
+    @GetMapping("/byPage")
+    public Map<String , Object> selectByPage(@RequestParam int currentPage, @RequestParam int pageSize){
+        //计算index和pageSize
+        int index=(currentPage-1)*pageSize;
+        List<user> pageData = userService.selectByPage(index, pageSize);
+        Integer totalCount = userService.selectTotalCount();
+        //通过Map封装
+        Map<String,Object> res=new HashMap<>();
+        res.put("pageData",pageData);
+        res.put("totalCount",totalCount);
+        return res;
+    };
+
+    @PostMapping("/byPageCond")
+    public Map<String , Object> selectByPageWithCondition(@RequestParam int currentPage, @RequestParam int pageSize,@RequestBody user user){
+        //计算index和pageSize
+        int index=(currentPage-1)*pageSize;
+        user.setUsername("%"+user.getUsername()+"%");
+
+        List<user> pageData = userService.selectByPageWithCondition(index, pageSize,user);
+        Integer totalCount = userService.selectTotalCountWithCondition(user);
+        //通过Map封装
+        Map<String,Object> res=new HashMap<>();
+        res.put("pageData",pageData);
+        res.put("totalCount",totalCount);
+        return res;
+    };
 }

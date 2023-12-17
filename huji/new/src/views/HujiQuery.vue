@@ -1,25 +1,21 @@
 <template>
 <div>
-  <!--表头-->
 
   <!--搜索栏表单-->
   <div style="margin-top: 15px; margin-left: 5px">
-    <el-form :inline="true" :model="formInline" ref="refForm" class="demo-form-inline" style="margin-left: 15px; margin-top: 15px">
-      <el-form-item>
-        <el-input v-model="formInline.Name" placeholder="姓名"></el-input>
+    <el-form :inline="true" :model="formInline" class="demo-form-inline" style="margin-left: 15px; margin-top: 15px">
+      <el-form-item >
+        <el-input v-model="formInline.Username" placeholder="用户名"></el-input>
       </el-form-item>
-
-      <el-form-item>
-        <el-input v-model="formInline.identityID" placeholder="身份证号码">
-        </el-input>
+      <el-form-item >
+        <el-input v-model="formInline.Name" placeholder="真实姓名"></el-input>
       </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit" icon="el-icon-search" size="small">查询</el-button>
-        </el-form-item>
-
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit" icon="el-icon-search" size="small">查询</el-button>
+      </el-form-item>
     </el-form>
   </div>
+  <!--新建 删除按钮-->
   <el-row style="margin-left: 20px; margin-bottom: 20px">
     <el-tooltip content="单击左侧以选择" placement="top" effect="light">
       <el-button type="danger" @click="deleteLimited" icon="el-icon-minus" size="small">批量删除</el-button>
@@ -27,7 +23,7 @@
   </el-row>
 
 
-<!--  删除 对话框-->
+  <!--删除 对话框-->
   <el-dialog
       title="提示"
       :visible.sync="dialogVisibleDel"
@@ -40,47 +36,6 @@
   </span>
   </el-dialog>
 
-  <!--更新 对话框-->
-  <el-dialog
-      title="修改身份证办理信息"
-      :visible.sync="dialogVisibleUpd"
-      :show-close=false
-      width="30%">
-    <el-form ref="formUpd" :model="formUpd" label-width="100px" >
-      <el-form-item label="姓名" prop="Name">
-        <el-input v-model="formUpd.Name"></el-input>
-      </el-form-item>
-      <el-form-item label="身份证号码" prop="identityID">
-        <el-input v-model="formUpd.identityID"></el-input>
-      </el-form-item>
-      <el-form-item label="性别" prop="Sex">
-        <el-select v-model="formUpd.Sex" placeholder="请选择性别">
-          <el-option label="男" value="男"></el-option>
-          <el-option label="女" value="女"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="年龄" prop="Age">
-        <el-input v-model="formUpd.Age"></el-input>
-      </el-form-item>
-      <el-form-item label="民族" prop="nation">
-        <el-input v-model="formUpd.nation"></el-input>
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="formUpd.status" placeholder="请选择">
-          <el-option label="过期" value="过期"></el-option>
-          <el-option label="未过期" value="未过期"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="updateidCard" >更新</el-button>
-        <el-button @click="closeForm({
-        formName: 'formUpd',
-        visibleProp: 'dialogVisibleUpd'
-        })
-       ">取消</el-button>
-      </el-form-item>
-    </el-form>
-  </el-dialog>
 
   <!--数据表单-->
   <template>
@@ -104,32 +59,14 @@
           width="50">
       </el-table-column>
       <el-table-column
-          prop="name"
+          prop="Username"
+          label="用户名"
+          align="center"
+         >
+      </el-table-column>
+      <el-table-column
+          prop="Name"
           label="姓名"
-          align="center"
-          >
-      </el-table-column>
-      <el-table-column
-          prop="sex"
-          label="性别"
-          align="center"
-          >
-      </el-table-column>
-      <el-table-column
-          prop="age"
-          label="年龄"
-          align="center"
-          >
-      </el-table-column>
-      <el-table-column
-          prop="nation"
-          label="民族"
-          align="center"
-          >
-      </el-table-column>
-      <el-table-column
-          prop="status"
-          label="身份证状态"
           align="center"
           >
       </el-table-column>
@@ -139,14 +76,38 @@
           align="center"
           width="180">
       </el-table-column>
-
+      <el-table-column
+          prop="Sex"
+          align="center"
+          label="性别">
+      </el-table-column>
+      <el-table-column
+          prop="Age"
+          align="center"
+          label="年龄">
+      </el-table-column>
+      <el-table-column
+          prop="PhoneNumber"
+          align="center"
+          label="电话号码">
+      </el-table-column>
+      <el-table-column
+          prop="Location"
+          align="center"
+          label="户籍地址">
+      </el-table-column>
+      <el-table-column
+          prop="processingTime"
+          align="center"
+          label="申请时间">
+      </el-table-column>
       <el-table-column
           prop="caozuo"
           align="center"
           label="操作">
         <el-row>
           <el-tooltip content="单击左侧以选择" placement="top" effect="light">
-            <el-button type="text" @click="updateLimited">修改</el-button>
+            <el-button type="text" @click="addLimited">同意</el-button>
           </el-tooltip>
           <el-tooltip content="单击左侧以选择" placement="top" effect="light">
             <el-button type="text" @click="deleteLimited">删除</el-button>
@@ -172,14 +133,14 @@
 </template>
 
 <script>
+
 //设置token请求头
 let user = localStorage.getItem("users") ? JSON.parse(localStorage.getItem("users")) : null;
 import axios from "axios";
 axios.defaults.headers.common['token'] = user.data.token;
 
-
 export default {
-  name: "idCard",
+  name: "Huji",
   // mounted() {
   //   this.selectByPage();
   // },
@@ -208,13 +169,13 @@ export default {
       //2. 发送ajax请求
       axios({
         method: "get",
-        url: "http://localhost:8090/idCards/byPage2?currentPage=" +_this.currentPage+ "&pageSize="+_this.pageSize,
+        url: "http://localhost:8090/huji/byPageQuery?currentPage=" +_this.currentPage+ "&pageSize="+_this.pageSize,
       }).then(function (resp) {
         _this.tableData = resp.data.pageData;
         _this.totalCount=resp.data.totalCount;
       })
     },
-    //删除要求选择方法
+    //删除户籍要求选择方法
     deleteLimited(){
       if(this.multipleSelection.length==0)
         this.dialogVisibleDel=false;
@@ -233,22 +194,21 @@ export default {
       var _this=this;
       axios({
         method:"delete",
-        url:"http://localhost:8090/idCards/delete2",
+        url:"http://localhost:8090/huji/delQuery",
         data:_this.selectedIds
       }).then(function (resp) {
         // 判断响应数据是否为 success
-        if(resp.data == "success"){
+        if(resp.data.msg == "请求成功"){
+          _this.addBad('注册户籍');
           //关闭窗口
           _this.dialogVisibleDel=false;
           //搜索数据
-          _this.selectAll();
-          // location.reload();
+          _this.selectByPage();
           //添加户籍成功提示框
           _this.$message({
             message: '删除成功',
             type: 'warning'
           });
-
         }
       })
     },
@@ -268,51 +228,50 @@ export default {
     //表头搜索框执行查询方法
     onSubmit() {
       var _this = this;
-
       axios({
         method: "post",
-        url: "http://localhost:8090/idCards/byPageCond2?currentPage=1&pageSize=1000",
+        url: "http://localhost:8090/huji/byPageCondQuery?currentPage=1&pageSize=1000",
         data:this.formInline
       }).then(function (resp) {
         _this.tableData = resp.data.pageData;
         _this.totalCount=resp.data.totalCount;
       })
     },
-    //搜索全部户籍方法
-    selectAll(){
-      var _this = this;
-      axios({
-        method: "get",
-        url: "http://localhost:8090/idCards/All2"
-      }).then(function (resp) {
-        _this.tableData = resp.data;
-      })
-    },
+
     //添加户籍方法
-    addidCard(){
-      var _this=this;
-      //2. 发送ajax请求
-      axios({
-        method:"post",
-        url:"http://localhost:8090/idCards/add2",
-        data:_this.form
-      }).then(function (resp) {
-        // 判断响应数据是否为 success
-        if(resp.data == "success"){
-          //搜索数据
-          _this.selectByPage();
-          //关闭窗口
-          _this.resetForm('formAdd')
-          _this.dialogVisible=false;
+    addLimited(){
+      if(this.multipleSelection.length!=0){
+        var _this=this;
+        console.log(_this.multipleSelection[0].Username)
+        //2. 发送ajax请求
+        axios({
+          method:"post",
+          url:"http://localhost:8090/huji/QueryReal",
+          data:{
+            Name:_this.multipleSelection[0].Name,
+            identityID:_this.multipleSelection[0].identityID,
+            Sex:_this.multipleSelection[0].Sex,
+            Age:_this.multipleSelection[0].Age,
+            PhoneNumber:_this.multipleSelection[0].PhoneNumber,
+            Location:_this.multipleSelection[0].Location
+          }
+        }).then(function (resp) {
+          // 判断响应数据是否为 success
+          if(resp.data.msg == "请求成功"){
+            _this.addGood('注册户籍');
+            //搜索数据
+            _this.selectByPage();
 
-          //添加户籍成功提示框
-          _this.$message({
-            message: '数据添加成功',
-            type: 'success'
-          });
+            //添加户籍成功提示框
+            _this.$message({
+              message: '数据添加成功',
+              type: 'success'
+            });
 
-        }
-      })
+          }
+        })
+      }
+
 
     },
     //更新户籍要求选择方法
@@ -321,36 +280,6 @@ export default {
         this.dialogVisibleUpd=false;
       else
         this.dialogVisibleUpd=true;
-    },
-    //更新户籍方法
-    updateidCard(){
-
-      let selectionElement = this.multipleSelection[0];
-      this.formUpd.id=selectionElement.id;
-      console.log(this.formUpd);
-
-      var _this=this;
-      //2. 发送ajax请求
-      axios({
-        method:"post",
-        url:"http://localhost:8090/idCards/update2",
-        data:_this.formUpd
-      }).then(function (resp) {
-        // 判断响应数据是否为 success
-        if(resp.data == "success"){
-          //关闭窗口
-          _this.resetForm('formUpd')
-          _this.dialogVisibleUpd=false;
-          //搜索数据
-          _this.selectByPage();
-          //添加户籍成功提示框
-          _this.$message({
-            message: '更新成功',
-            type: 'success'
-          });
-
-        }
-      })
     },
     //分页条方法
     handleSizeChange(val) {
@@ -376,6 +305,32 @@ export default {
     closeForm(formInfo) {
       this.resetForm(formInfo.formName); // 调用重置表单的方法
       this[formInfo.visibleProp] = false; // 根据传入的可见性属性名来控制表单的显示与隐藏
+    },
+    addGood(info){
+      var _this = this;
+      axios({
+        method: "post",
+        url: "http://localhost:8090/notice/addGood",
+        data: {
+          Username: _this.multipleSelection[0].Username,
+          info: info
+        }
+      }).then(function (resp) {
+
+      })
+    },
+    addBad(info){
+      var _this = this;
+      axios({
+        method: "post",
+        url: "http://localhost:8090/notice/addBad",
+        data: {
+          Username: _this.multipleSelection[0].Username,
+          info: info
+        }
+      }).then(function (resp) {
+
+      })
     }
 
   },
@@ -394,9 +349,8 @@ export default {
       sideHeight: 200,
       //顶头搜索表单数据
       formInline: {
-        Name: '',
-        identityID: '',
-        status: ''
+        Username: '',
+        Name: ''
       },
       //新建 对话框隐藏属性
       dialogVisible: false,
@@ -411,20 +365,23 @@ export default {
       form: {
         Name: '',//this.multipleSelection.Name,
         identityID: '',//this.multipleSelection.identityID,
-        processingTime: '',//this.multipleSelection.Sex,
-        collectionTime: '',//this.multipleSelection.Age,
-        status: '',//this.multipleSelection.PhoneNumber,
+        Sex: '',//this.multipleSelection.Sex,
+        Age: '',//this.multipleSelection.Age,
+        PhoneNumber: '',//this.multipleSelection.PhoneNumber,
+        Location: ''//this.multipleSelection.Location
       },
 
       //更新 对话框内表单
       formUpd: {
         id: '',
-        status: '',
         Name: '',
         identityID: '',
         Sex: '',
         Age: '',
-        nation: '',
+        PhoneNumber: '',
+        Location: '',
+        LocationOld: '',
+        movingTypes: ''
       },
 
       //更新 提示框可见性

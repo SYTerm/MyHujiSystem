@@ -4,9 +4,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huzd.huji.mapper.hujiMovingMapper">
     <insert id="addHujiMoving">
-         insert into hujimovingtable (id,Name,identityID,locationOld,locationNew,movingTypes)
-        value(#{id},#{Name},#{identityID},#{locationOld},#{locationNew},#{movingTypes});
+         insert into hujimovingtable (Name,identityID,locationOld,locationNew,movingTypes)
+        value(#{Name},#{identityID},#{locationOld},#{locationNew},#{movingTypes});
     </insert>
+    <insert id="upload">
+        insert into hujiMovingquerytable (id,Username,Name,identityID,Sex,Age,PhoneNumber,locationOld,locationNew,movingTypes,processingTime)
+        value(#{queryData.id},#{queryData.Username},#{queryData.Name},#{queryData.identityID},#{queryData.Sex},#{queryData.Age},#{queryData.PhoneNumber},#{queryData.locationOld},#{queryData.locationNew},#{queryData.movingTypes},#{queryData.processingTime});
+    </insert>
+    <delete id="deleteQueryByIds">
+        delete from hujimovingquerytable
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
     <select id="selectAll" resultType="com.huzd.huji.pojo.hujiMoving">
         select *from hujimovingtable;
     </select>
@@ -34,5 +45,55 @@
             </if>
         </where>
         ;
+    </select>
+    <select id="selectTotalIn" resultType="java.lang.Integer">
+        SELECT count(*)
+        from hujimovingtable
+        where movingTypes='迁入'
+        and identityID =#{hujiMoving.identityID};
+    </select>
+    <select id="selectTotalOut" resultType="java.lang.Integer">
+        SELECT count(*)
+        from hujimovingtable
+        where movingTypes='迁出'
+        and identityID =#{hujiMoving.identityID};
+    </select>
+    <select id="selectLastLocation" resultType="com.huzd.huji.pojo.hujiMoving">
+        SELECT *
+        from hujimovingtable
+        where locationNew=#{hujiMoving.locationNew}
+        and identityID =#{hujiMoving.identityID};
+    </select>
+
+
+    <select id="selectQueryByPage" resultType="com.huzd.huji.pojo.hujiMovingqueryData">
+        select * from hujimovingquerytable
+         limit #{begin}, #{size}
+    </select>
+    <select id="selectTotalCountQueryByPageCond" resultType="java.lang.Integer">
+        select count(*) from hujimovingquerytable
+        <where>
+            <if test="queryData.Username!=null and queryData.Username!=''">
+                and Username LIKE #{queryData.Username}
+            </if>
+            <if test="queryData.Name!=null and queryData.Name!=''">
+                and Name LIKE #{queryData.Name}
+            </if>
+        </where>
+    </select>
+    <select id="selectQueryByPageCond" resultType="com.huzd.huji.pojo.hujiMovingqueryData">
+        select * from hujimovingquerytable
+        <where>
+            <if test="queryData.Username!=null and queryData.Username!=''">
+                and Username LIKE #{queryData.Username}
+            </if>
+            <if test="queryData.Name!=null and queryData.Name!=''">
+                and Name LIKE #{queryData.Name}
+            </if>
+        </where>
+        limit #{begin},#{size};
+    </select>
+    <select id="selectStatus" resultType="java.lang.String">
+        select status from idcardtable where identityID = #{hujiMoving.identityID}
     </select>
 </mapper>

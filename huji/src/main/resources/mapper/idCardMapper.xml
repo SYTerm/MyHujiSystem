@@ -3,20 +3,21 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huzd.huji.mapper.idCardMapper">
+    <!--以下是身份证请求操作-->
     <insert id="addidCard">
-        insert into idcardtable (Name,identityID,processingTime,collectionTime,status)
+        insert into idcardquerytable (Name,identityID,processingTime,collectionTime,status)
         value(#{Name},#{identityID},#{processingTime},#{collectionTime},#{status});
     </insert>
     <insert id="addOrAdjustidCard">
-        insert into idcardtable (Name,identityID,processingTime,collectionTime,status,Age,Sex,nation)
-        value(#{Name},#{identityID},#{processingTime},#{collectionTime},#{status},#{Age},#{Sex},#{nation});
+        insert into idcardquerytable (Name,identityID,processingTime,collectionTime,status,Age,Sex,nation,types)
+        value(#{Name},#{identityID},#{processingTime},#{collectionTime},#{status},#{Age},#{Sex},#{nation},#{types});
     </insert>
     <update id="updateidCard">
-         update idcardtable set status =#{idCard.status}
+         update idcardquerytable set status ='办理完成'
         where id=#{idCard.id};
     </update>
     <delete id="deleteidCard">
-        delete from idCardTable
+        delete from idCardqueryTable
         where id in
         <foreach collection="ids" item="id" separator="," open="(" close=")">
             #{id}
@@ -24,17 +25,18 @@
     </delete>
 
     <select id="selectAll" resultType="com.huzd.huji.pojo.idCard">
-        select * from idcardtable;
+        select * from idcardquerytable;
     </select>
     <select id="selectByPage" resultType="com.huzd.huji.pojo.idCard">
-         select * from idcardtable
+         select * from idcardquerytable
+        order by processingTime DESC
         limit #{begin} ,#{size};
     </select>
     <select id="selectTotalCount" resultType="java.lang.Integer">
-        select count(*)from idcardtable;
+        select count(*)from idcardquerytable;
     </select>
     <select id="selectByPageWithCondition" resultType="com.huzd.huji.pojo.idCard">
-        select * from idcardtable
+        select * from idcardquerytable
         <where>
             <if test="idCard.Name!=null and idCard.Name!=''">
                 and Name LIKE #{idCard.Name}
@@ -46,10 +48,11 @@
                 and status LIKE #{idCard.status}
             </if>
         </where>
+        order by processingTime DESC
         limit #{begin},#{size};
     </select>
     <select id="selectTotalCountWithCondition" resultType="java.lang.Integer">
-        select count(*)from idcardtable
+        select count(*)from idcardquerytable
         <where>
             <if test="idCard.Name!=null and idCard.Name!=''">
                 and Name LIKE #{idCard.Name}
@@ -65,16 +68,141 @@
     </select>
 
     <select id="selectByPageAllRright" resultType="com.huzd.huji.pojo.idCard">
-        select * from idcardtable
+        select * from idcardquerytable
         where status = '办理完成'
         limit #{begin} ,#{size};
     </select>
 
     <select id="selectTotalCountAllRight" resultType="java.lang.Integer">
-        select count(*)from idcardtable where status = '办理完成';
+        select count(*)from idcardquerytable where status = '办理完成';
     </select>
     <select id="selectOne" resultType="com.huzd.huji.pojo.idCard">
+        select * from idcardquerytable where identityID LIKE #{identityID}
+    </select>
+    <select id="selectByPageWithConditionForUser" resultType="com.huzd.huji.pojo.idCard">
+        SELECT i.Name,i.identityID,i.processingTime,i.collectionTime,i.status,i.types
+        from idcardquerytable i,connecttable c
+        where i.identityID = c.identityID
+        and c.Username = #{connect.Username}
+        ORDER BY i.processingTime DESC
+        limit #{begin} ,#{size};
+    </select>
+    <select id="selectTotalCountWithConditionForUser" resultType="java.lang.Integer">
+        SELECT count(*)
+        from idcardquerytable i,connecttable c
+        where i.identityID = c.identityID
+        and c.Username = #{connect.Username};
+    </select>
+
+    <!--以下是身份证操作-->
+    <insert id="addidCard2">
+        insert into idcardtable (Name,identityID,status)
+        value(#{Name},#{identityID},#{status});
+    </insert>
+    <insert id="addOrAdjustidCard2">
+        insert into idcardtable (Name,identityID,status,Age,Sex,nation)
+        value(#{Name},#{identityID},'未过期',#{Age},#{Sex},#{nation});
+    </insert>
+    <update id="updateidCard2">
+         update idcardtable
+        <set>
+            <if test="idCard.Name!=null and idCard.Name!=''">
+                Name = #{idCard.Name},
+            </if>
+            <if test="idCard.identityID!=null and idCard.identityID!=''">
+                identityID = #{idCard.identityID},
+            </if>
+            <if test="idCard.Sex!=null and idCard.Sex!=''">
+                Sex = #{idCard.Sex},
+            </if>
+            <if test="idCard.Age!=null and idCard.Age!=''">
+                Age = #{idCard.Age},
+            </if>
+            <if test="idCard.nation!=null and idCard.nation!=''">
+                nation = #{idCard.nation},
+            </if>
+            <if test="idCard.status!=null and idCard.status!=''">
+                status = #{idCard.status},
+            </if>
+        </set>
+        where id=#{idCard.id};
+    </update>
+    <update id="updateTime">
+        update idcardquerytable set collectionTime = #{idCard.collectionTime} where id = #{idCard.id};
+    </update>
+    <delete id="deleteidCard2">
+        delete from idCardTable
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAll2" resultType="com.huzd.huji.pojo.idCard">
+        select * from idcardtable;
+    </select>
+    <select id="selectByPage2" resultType="com.huzd.huji.pojo.idCard">
+         select * from idcardtable
+        limit #{begin} ,#{size};
+    </select>
+    <select id="selectTotalCount2" resultType="java.lang.Integer">
+        select count(*)from idcardtable;
+    </select>
+    <select id="selectByPageWithCondition2" resultType="com.huzd.huji.pojo.idCard">
+        select * from idcardtable
+        <where>
+            <if test="idCard.Name!=null and idCard.Name!=''">
+                and Name LIKE #{idCard.Name}
+            </if>
+            <if test="idCard.identityID!=null and idCard.identityID!=''">
+                and identityID LIKE #{idCard.identityID}
+            </if>
+            <if test="idCard.status!=null and idCard.status!=''">
+                and status LIKE #{idCard.status}
+            </if>
+        </where>
+        limit #{begin},#{size};
+    </select>
+    <select id="selectTotalCountWithCondition2" resultType="java.lang.Integer">
+        select count(*)from idcardtable
+        <where>
+            <if test="idCard.Name!=null and idCard.Name!=''">
+                and Name LIKE #{idCard.Name}
+            </if>
+            <if test="idCard.identityID!=null and idCard.identityID!=''">
+                and identityID LIKE #{idCard.identityID}
+            </if>
+            <if test="idCard.status!=null and idCard.status!=''">
+                and status LIKE #{idCard.status}
+            </if>
+        </where>
+        ;
+    </select>
+
+    <select id="selectByPageAllRright2" resultType="com.huzd.huji.pojo.idCard">
+        select * from idcardtable
+        where status = '办理完成'
+        limit #{begin} ,#{size};
+    </select>
+
+    <select id="selectTotalCountAllRight2" resultType="java.lang.Integer">
+        select count(*)from idcardtable where status = '办理完成';
+    </select>
+    <select id="selectOne2" resultType="com.huzd.huji.pojo.idCard">
         select * from idcardtable where identityID LIKE #{identityID}
+    </select>
+    <select id="selectByPageWithConditionForUser2" resultType="com.huzd.huji.pojo.idCard">
+        SELECT i.Name,i.identityID,i.status
+        from idcardtable i,connecttable c
+        where i.identityID = c.identityID
+        and c.Username = #{connect.Username}
+        limit #{begin} ,#{size};
+    </select>
+    <select id="selectTotalCountWithConditionForUser2" resultType="java.lang.Integer">
+        SELECT count(*)
+        from idcardtable i,connecttable c
+        where i.identityID = c.identityID
+        and c.Username = #{connect.Username};
     </select>
 
 </mapper>

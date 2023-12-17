@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.huzd.huji.mapper.noticeMapper">
+    <insert id="addNotice">
+        insert into noticetable (Username,info,processingTime)
+        values (#{notice.Username},#{notice.info},#{notice.processingTime});
+    </insert>
+
+    <select id="selectUser" resultType="com.huzd.huji.pojo.notice">
+        select * from noticetable where Username = #{user.Username}
+    </select>
+    <select id="selectUserByPage" resultType="com.huzd.huji.pojo.notice">
+        select * from noticetable where Username = #{user.Username}
+        order by processingTime DESC
+        limit #{index},#{size}
+    </select>
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select count(*) from noticetable where Username = #{user.Username}
+    </select>
+</mapper>

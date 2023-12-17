@@ -6,6 +6,13 @@
     <insert id="add">
         insert into usertable (Username,Password) values (#{Username},#{Password});
     </insert>
+    <delete id="deleteByIds">
+        delete from usertable
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 
     <select id="selectbyUsername" resultType="com.huzd.huji.pojo.user">
         select * from usertable
@@ -20,6 +27,30 @@
         select hujitable.Name,hujitable.identityID,hujitable.Sex,hujitable.Age,hujitable.PhoneNumber,hujitable.Location
             from connecttable,hujitable
         where connecttable.identityID = hujitable.identityID AND connecttable.Username = #{Username};
+    </select>
+    <select id="selectByPage" resultType="com.huzd.huji.pojo.user">
+        select Username,id from usertable
+        limit #{begin} ,#{size};
+    </select>
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select count(*)from usertable;
+    </select>
+    <select id="selectByPageWithCondition" resultType="com.huzd.huji.pojo.user">
+        select Username,id from usertable
+        <where>
+            <if test="user.Username!=null and user.Username!=''">
+                and Username LIKE #{user.Username}
+            </if>
+        </where>
+        limit #{begin},#{size};
+    </select>
+    <select id="selectTotalCountWithCondition" resultType="java.lang.Integer">
+        select count(*) from usertable
+        <where>
+            <if test="user.Username!=null and user.Username!=''">
+                and Username LIKE #{user.Username}
+            </if>
+        </where>
     </select>
 
 </mapper>

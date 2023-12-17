@@ -1,10 +1,22 @@
 <template>
 <div>
   <!--表头-->
-
+  <!--  删除 对话框-->
+  <el-dialog
+      title="提示"
+      :visible.sync="dialogVisibleDel"
+      width="30%"
+      :show-close=false>
+    <span>确定要删除吗</span>
+    <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisibleDel = false">取 消</el-button>
+    <el-button type="primary" @click="deleteBySelectedIds">确 定</el-button>
+  </span>
+  </el-dialog>
 
   <!--搜索栏表单-->
   <div style="margin-top: 15px; margin-left: 5px">
+
     <el-form :inline="true" :model="formInline" ref="refForm" class="demo-form-inline" style="margin-left: 15px; margin-top: 15px">
       <el-form-item>
         <el-input v-model="formInline.Name" placeholder="姓名"></el-input>
@@ -25,12 +37,15 @@
         <el-form-item>
           <el-button type="primary" @click="onSubmit" icon="el-icon-search" size="small">查询</el-button>
         </el-form-item>
+
     </el-form>
+      <el-row style="margin-left: 20px; margin-bottom: 15px;margin-top: 0px">
+    <el-tooltip content="单击左侧以选择" placement="top" effect="light">
+      <el-button type="danger" @click="deleteLimited" icon="el-icon-minus" size="small">批量删除</el-button>
+    </el-tooltip>
+    </el-row>
   </div>
-  <!--新建 删除按钮-->
-  <el-row style="margin-left: 20px; margin-bottom: 20px">
-    <el-button type="primary" @click="dialogVisible = true" icon="el-icon-plus" size="small">新建</el-button>
-  </el-row>
+
 
   <!--新建 对话框-->
   <el-dialog
@@ -69,7 +84,31 @@
         })">取消</el-button>
       </el-form-item>
     </el-form>
-    </span>
+  </el-dialog>
+
+  <!--更新 对话框-->
+  <el-dialog
+      title="修改完成时间"
+      :visible.sync="dialogVisibleUpd"
+      :show-close=false
+      width="30%">
+    <el-form ref="formUpd2" :model="formUpd2" label-width="100px" >
+
+      <el-form-item label="预计领取时间" prop="collectionTime">
+        <el-col>
+          <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="formUpd2.collectionTime" style="width: 100%;"></el-date-picker>
+        </el-col>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="updateTime" >更新</el-button>
+        <el-button @click="closeForm({
+        formName: 'formUpd2',
+        visibleProp: 'dialogVisibleUpd'
+        })
+       ">取消</el-button>
+      </el-form-item>
+    </el-form>
   </el-dialog>
 
 
@@ -86,35 +125,12 @@
   </span>
   </el-dialog>
 
-  <!--更新 对话框-->
-  <el-dialog
-      title="修改身份证办理信息"
-      :visible.sync="dialogVisibleUpd"
-      :show-close=false
-      width="30%">
-    <el-form ref="formUpd" :model="formUpd" label-width="100px" >
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="formUpd.status" placeholder="请选择">
-          <el-option label="正在办理" value="正在办理"></el-option>
-          <el-option label="办理完成" value="办理完成"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="updateidCard" >更新</el-button>
-        <el-button @click="closeForm({
-        formName: 'formUpd',
-        visibleProp: 'dialogVisibleUpd'
-        })
-       ">取消</el-button>
-      </el-form-item>
-    </el-form>
-    </span>
-  </el-dialog>
 
   <!--数据表单-->
   <template>
     <el-table
         :data="tableData"
+        :default-sort = "{prop: 'processingTime', order: 'descending'}"
         stripe
         style="width: 100%"
         @selection-change="handleSelectionChange"
@@ -146,6 +162,7 @@
       </el-table-column>
       <el-table-column
           prop="processingTime"
+          sortable
           align="center"
           label="办理时间">
       </el-table-column>
@@ -153,6 +170,11 @@
           prop="collectionTime"
           align="center"
           label="领取时间">
+      </el-table-column>
+      <el-table-column
+          prop="types"
+          align="center"
+          label="类型">
       </el-table-column>
       <el-table-column
           prop="status"
@@ -165,8 +187,12 @@
           label="操作">
         <el-row>
           <el-tooltip content="单击左侧以选择" placement="top" effect="light">
+            <el-button type="text" @click="updateidCard">同意</el-button>
+          </el-tooltip>
+          <el-tooltip content="单击左侧以选择" placement="top" effect="light">
             <el-button type="text" @click="updateLimited">修改</el-button>
           </el-tooltip>
+
         </el-row>
       </el-table-column>
 
@@ -249,7 +275,7 @@ export default {
       var _this=this;
       axios({
         method:"delete",
-        url:"http://localhost:8090/huji/deletes",
+        url:"http://localhost:8090/idCards/delete",
         data:_this.selectedIds
       }).then(function (resp) {
         // 判断响应数据是否为 success
@@ -343,20 +369,19 @@ export default {
     updateidCard(){
 
       let selectionElement = this.multipleSelection[0];
-      this.formUpd.id=selectionElement.id;
+      this.formUpd=selectionElement;
       console.log(this.formUpd);
 
       var _this=this;
       //2. 发送ajax请求
       axios({
         method:"post",
-        url:"http://localhost:8090/idCards/update",
+        url:"http://localhost:8090/idCards/update2",
         data:_this.formUpd
       }).then(function (resp) {
         // 判断响应数据是否为 success
         if(resp.data == "success"){
           //关闭窗口
-          _this.resetForm('formUpd')
           _this.dialogVisibleUpd=false;
           //搜索数据
           _this.selectByPage();
@@ -365,7 +390,9 @@ export default {
             message: '更新成功',
             type: 'success'
           });
-
+        }
+        else {
+          _this.$message.error(resp.data);
         }
       })
     },
@@ -393,6 +420,36 @@ export default {
     closeForm(formInfo) {
       this.resetForm(formInfo.formName); // 调用重置表单的方法
       this[formInfo.visibleProp] = false; // 根据传入的可见性属性名来控制表单的显示与隐藏
+    },
+    //更新时间
+    updateTime(){
+      let selectionElement = this.multipleSelection[0];
+      this.formUpd2.id=selectionElement.id;
+      console.log(this.formUpd2);
+
+      var _this=this;
+      //2. 发送ajax请求
+      axios({
+        method:"post",
+        url:"http://localhost:8090/idCards/updateTime",
+        data:_this.formUpd2
+      }).then(function (resp) {
+        // 判断响应数据是否为 success
+        if(resp.data.msg == "请求成功"){
+          //关闭窗口
+          _this.dialogVisibleUpd=false;
+          //搜索数据
+          _this.selectByPage();
+          //添加户籍成功提示框
+          _this.$message({
+            message: '更新成功',
+            type: 'success'
+          });
+        }
+        else {
+          _this.$message.error(resp.data.msg);
+        }
+      })
     }
 
   },
@@ -436,7 +493,20 @@ export default {
       //更新 对话框内表单
       formUpd: {
         id: '',
-        status: ''
+        Name: '',
+        identityID: '',
+        processingTime: '',
+        collectionTime: '',
+        status: '',
+        Age: '',
+        Sex: '',
+        nation: '',
+        types: ''
+      },
+
+      formUpd2: {
+        id: '',
+        collectionTime: '',
       },
 
       //更新 提示框可见性

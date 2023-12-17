@@ -78,39 +78,37 @@
 
     </el-dialog>
 
-    <el-row :gutter="20" style="margin: 0; height: 100vh">
+    <el-row :gutter="20" style="margin: 15px; height:100%">
       <el-col :span="12">
         <div>
           <!-- 首页user信息 -->
-          <el-card shadow= 'hover' style="height: 100vh">
-            <div style="height: 100vh; display: flex; justify-content: center;">
+          <el-card shadow= 'hover' style="height: 100%; border-radius: 20px">
+            <div style="height: 75%; display: flex; justify-content: center;">
                 <el-form :model="formData1" :rules="rules" ref="loginRef">
                   <div style="font-size: 20px; font-weight: bold;align-items: center; text-align:center; margin: 20px;">
                     用户信息<br/>
                   </div>
-                  <!--用户名-->
-                  <el-form-item prop="username" label="用户名">
-                    <el-input :disabled=true prefix-icon="el-icon-user"  placeholder="用户名" v-model="formData1.name"></el-input>
-                  </el-form-item>
-                  <!--密码-->
-                  <el-form-item prop="password" label="密码">
-                    <el-input :disabled=true prefix-icon="el-icon-lock" :show-password=isMouseOver   placeholder="密码" v-model="formData1.password"></el-input>
-                  </el-form-item>
 
                   <el-form-item>
-                    <el-button type="primary" style="width: 100%" @click="changeVisible">
+                    <el-descriptions :column="1">
+                      <el-descriptions-item label="用户名">{{formData1.name}}</el-descriptions-item>
+                      <el-descriptions-item label="密码">{{formData1.password}}</el-descriptions-item>
+                    </el-descriptions>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button type="primary" style="width: 50%" @click="changeVisible">
                       {{bian}}密码
                     </el-button>
                   </el-form-item>
 
                   <el-form-item>
-                    <el-button type="primary" style="width: 100%" @click="dialogVisibleDel=true">
+                    <el-button type="primary" style="width: 50%" @click="dialogVisibleDel=true">
                       修改密码
                     </el-button>
                   </el-form-item>
 
                   <el-form-item>
-                    <el-button type="primary" style="width: 100%" @click="dialogVisibleCon=true">
+                    <el-button type="primary" style="width: 50%" @click="dialogVisibleCon=true">
                       绑定户籍
                     </el-button>
                   </el-form-item>
@@ -122,39 +120,79 @@
         </div>
       </el-col>
       <el-col :span="12">
-        <el-card shadow= 'hover' style="height: 100vh">
-          <div style="height: 100vh; display: flex; justify-content: center;">
-          <el-form :model="formData2" :rules="rules2" ref="MineRef">
-            <div style="font-size: 20px; font-weight: bold;align-items: center; text-align:center; margin: 20px;">
-              用户户籍信息<br/>
+
+        <el-row style="margin-bottom: 20px;">
+          <el-card shadow= 'hover' style="height: 50%; border-radius: 20px">
+            <div style="height: 100%; display: flex; justify-content: center;">
+              <el-descriptions title="用户户籍信息" :model="formData2" :column="1">
+                <el-descriptions-item label="姓名">{{ formData2.name }}</el-descriptions-item>
+                <el-descriptions-item label="性别">{{ formData2.Sex }}</el-descriptions-item>
+                <el-descriptions-item label="年龄">{{ formData2.Age }}</el-descriptions-item>
+                <el-descriptions-item label="身份证号码">{{ formData2.identityID }}</el-descriptions-item>
+                <el-descriptions-item label="电话号码">{{ formData2.PhoneNumber }}</el-descriptions-item>
+                <el-descriptions-item label="户籍地">{{ formData2.Location }}</el-descriptions-item>
+              </el-descriptions>
             </div>
-            <!--用户名-->
-            <el-form-item prop="name" label="姓名">
-              <el-input :disabled="true"  v-model="formData2.name"></el-input>
-            </el-form-item>
+          </el-card>
+        </el-row>
 
-            <el-form-item prop="Sex" label="性别">
-              <el-input :disabled="true"  v-model="formData2.Sex"></el-input>
-            </el-form-item>
+        <el-row>
+          <el-card shadow= 'hover' style="height: 50%; border-radius: 20px">
+            <div>
+              <el-row :gutter="20">
+                <el-col :span="24">
+                  <div style="text-align: center; font-size: 25px">
+                    <p style="margin-top: 0;margin-bottom: 20px">您的情况</p>
+                  </div>
 
-            <el-form-item prop="Age" label="年龄">
-              <el-input :disabled="true"  v-model="formData2.Age"></el-input>
-            </el-form-item>
-            <el-form-item prop="Age" label="身份证号码">
-              <el-input :disabled="true"  v-model="formData2.identityID"></el-input>
-            </el-form-item>
-            <el-form-item prop="PhoneNumber" label="电话号码">
-              <el-input :disabled="true"  v-model="formData2.PhoneNumber"></el-input>
-            </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="20">
+                <el-col :span="8">
+                  <div>
+                    <el-statistic title="户籍迁入次数"  :model="Details">
+                      <template slot="formatter">
+                        {{ Details.In }}
+                      </template>
+                    </el-statistic>
+                  </div>
+                </el-col>
+                <el-col :span="8">
+                  <div>
+                    <el-statistic title="户籍迁出次数" :model="Details">
+                      <template slot="formatter">
+                        {{ Details.Out }}
+                      </template>
+                    </el-statistic>
+                  </div>
+                </el-col>
+                <el-col :span="8">
+                  <div>
+                    <el-statistic title="上一次的户籍地" :model="Details">
+                      <template slot="formatter">
+                        {{ Details.LastLocation }}
+                      </template>
+                    </el-statistic>
+                  </div>
+                </el-col>
+              </el-row>
 
-            <el-form-item prop="Location" label="户籍地">
-              <el-input :disabled="true"  v-model="formData2.Location"></el-input>
-            </el-form-item>
+              <el-row :gutter="20">
+                <el-col :span="8">
+                  <div>
+                    <el-statistic title="身份证状态" :model="Details">
+                      <template slot="formatter">
+                        {{ Details.Status }}
+                      </template>
+                    </el-statistic>
+                  </div>
+                </el-col>
+              </el-row>
 
-          </el-form>
-          </div>
+            </div>
+          </el-card>
+        </el-row>
 
-        </el-card>
       </el-col>
     </el-row>
   </div>
@@ -220,7 +258,8 @@ export default {
           {min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur'}
         ],
         passwordOld: [
-          {validator:checkedPasswd, trigger: 'blur'}
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          // {validator:checkedPasswd, trigger: 'blur'}
         ],
         code: [
           {validator:validCode, trigger: 'blur'}
@@ -234,7 +273,7 @@ export default {
 
       formData1:{
         name:JSON.parse(localStorage.getItem("users")).data.Username,
-        password:null
+        password: '*****'
       },
       formData2:{
         Name:'',
@@ -249,6 +288,12 @@ export default {
         Username:'',
         Name:'',
         identityID:''
+      },
+      Details:{
+        In: '',
+        Out: '',
+        LastLocation: '',
+        Status: ''
       },
 
       circleUrl:'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
@@ -266,7 +311,6 @@ export default {
 
   created() {
    this.showHuji();
-    this.getPasswordFromBackend();
   },
 
 
@@ -281,7 +325,7 @@ export default {
         {
           axios({
             method: "Post",
-            url: "http://localhost:8090/user/update",
+            url: "http://localhost:8090/user/update?PasswdIn="+_this.formData.passwordOld,
             data: _this.formData
           }).then(function (resp) {
             if(resp.data.msg=="请求成功")
@@ -366,9 +410,15 @@ export default {
     changeVisible(){
       this.isMouseOver = !this.isMouseOver;
       if(this.bian =='查看')
+      {
         this.bian='关闭';
+        this.getPasswordFromBackend();
+      }
       else
+      {
         this.bian='查看';
+        this.formData1.password ='*****'
+      }
     },
 
     showHuji(){
@@ -382,10 +432,15 @@ export default {
             }
 
           }).then(function (resp) {
-            _this.formData2 = resp.data.data
+            if(resp.data.data != null)
+            {
+              _this.formData2 = resp.data.data
+              _this.getDetails(_this.formData2.identityID,_this.formData2.Location)
+            }
           })
 
     },
+
     getPasswordFromBackend(){
       var _this = this;
       axios({
@@ -397,6 +452,31 @@ export default {
 
       }).then(function (resp) {
         _this.formData1.password= resp.data.password
+      })
+    },
+
+    getDetails(id, lo){
+      var _this = this;
+      axios({
+        method: "Post",
+        url: "http://localhost:8090/hujiMoving/details",
+        data: {
+          identityID:id,
+          locationNew:lo
+        }
+
+      }).then(function (resp) {
+        if(resp.data != null)
+        {
+          _this.Details.In =resp.data.data.In
+          _this.Details.Out = resp.data.data.Out
+          _this.Details.Status = resp.data.data.Status
+          if(resp.data.data.Last.locationOld != null)
+            _this.Details.LastLocation = resp.data.data.Last.locationOld
+          else
+            _this.Details.LastLocation = _this.formData2.Location
+        }
+
       })
     }
   }
